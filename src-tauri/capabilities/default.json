@@ -26,6 +26,8 @@
     "autostart:allow-is-enabled",
     "store:default",
     "clipboard-manager:default",
-    "fs:default"
+    "fs:default",
+    "notification:default",
+    "notification:allow-notify"
   ]
 }
