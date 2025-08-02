@@ -10,13 +10,19 @@
     "beforeBuildCommand": "npm run build"
   },
   "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
-        "title": "nuxt-app",
-        "width": 800,
-        "height": 600,
+        "title": "Cubit",
+        "width": 600,
+        "height": 300,
         "resizable": true,
-        "fullscreen": false
+        "fullscreen": false,
+        "visible": false,
+        "alwaysOnTop": true,
+        "transparent": true,
+        "decorations": false,
+        "center": true
       }
     ],
     "security": {

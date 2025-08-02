@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
     devtools: {enabled: true},
 
-    modules: ["@nuxt/ui", "nuxt-auth-utils", "@vueuse/nuxt", "@nuxt/image", "@nuxt/icon", "@nuxt/fonts", "@nuxtjs/i18n"],
+    modules: ["@nuxt/ui", "nuxt-auth-utils", "@vueuse/nuxt", "@nuxt/image", "@nuxt/icon", "@nuxt/fonts", "@nuxtjs/i18n", "@nuxt/scripts"],
 
     css: ["~/assets/css/main.css"],
 
@@ -24,4 +24,19 @@ export default defineNuxtConfig({
             strictPort: true,
         },
     },
+
+    app: {
+        head: {
+            script: [
+                {
+                    src: 'https://www.desmos.com/api/v1.11/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6',
+                    async: true,
+                },
+                {
+                    src: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js',
+                    async: true,
+                },
+            ]
+        }
+    }
 });

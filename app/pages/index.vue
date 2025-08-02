@@ -1,25 +1,31 @@
+<script setup lang="ts">
+import {getCurrentWindow, LogicalSize} from '@tauri-apps/api/window';
+import {defaultModules} from "~/logic/defaultModules";
+import useWindowControl from "~/composables/utility/useWindowControl";
+
+const $win = useWindowControl()
+
+defineShortcuts({
+    'escape': {
+        async handler() {
+            await $win.hideWindow()
+        },
+        usingInput: true
+    }
+})
+
+
+await getCurrentWindow().setSize(new LogicalSize(600, 300));
+
+const commandPalette = ref([
+    {
+        id: 'default-modules',
+        items: defaultModules().map(i => ({id: i.moduleId, label: i.moduleName, icon: i.moduleIcon, to: `/cubit-modules/${i.moduleId}`}))
+    }
+])
+const value = ref({})
+</script>
+
 <template>
-  <div class="flex flex-col items-center justify-center gap-4 h-screen">
-    <h1 class="font-bold text-2xl text-(--ui-primary)">
-      Nuxt UI v3
-    </h1>
-
-    <div class="flex items-center gap-2">
-      <UButton
-        label="Documentation"
-        icon="i-lucide-square-play"
-        to="https://ui3.nuxt.dev/getting-started/installation/nuxt"
-        target="_blank"
-      />
-
-      <UButton
-        label="GitHub"
-        color="neutral"
-        variant="outline"
-        icon="i-simple-icons-github"
-        to="https://github.com/nuxt/ui"
-        target="_blank"
-      />
-    </div>
-  </div>
+    <UCommandPalette autofocus v-model="value" :groups="commandPalette"/>
 </template>

@@ -21,8 +21,14 @@
 		"@nuxt/fonts": "0.11.4",
 		"@nuxt/icon": "1.15.0",
 		"@nuxt/image": "1.11.0",
+		"@nuxt/scripts": "0.11.10",
 		"@nuxt/ui": "3.3.0",
 		"@nuxtjs/i18n": "10.0.3",
+		"@tauri-apps/api": "^2.7.0",
+		"@tauri-apps/plugin-clipboard-manager": "^2.3.0",
+		"@tauri-apps/plugin-global-shortcut": "^2.3.0",
+		"@tauri-apps/plugin-store": "^2.3.0",
+		"@unhead/vue": "^2.0.12",
 		"@vueuse/nuxt": "13.6.0",
 		"nuxt": "^4.0.2",
 		"nuxt-auth-utils": "0.5.22",
@@ -30,6 +36,8 @@
 	},
 	"devDependencies": {
 		"@tauri-apps/cli": "^2.7.1",
+		"@types/desmos": "^1.11.0",
+		"desmos": "^1.5.4",
 		"eslint": "^9.32.0",
 		"typescript": "^5.9.2"
 	},
