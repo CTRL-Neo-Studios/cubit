@@ -11,6 +11,11 @@ export function defaultModules(config?: CubitModulesConfig): CubitModule[] {
             moduleName: 'LaTeX Editor',
             moduleId: 'latex-editor',
             moduleIcon: 'i-lucide-sigma'
+        },
+        {
+            moduleName: 'Todos',
+            moduleId: 'todos',
+            moduleIcon: 'i-lucide-codesandbox'
         }
     ]
 }

@@ -2,6 +2,9 @@
 import { register } from '@tauri-apps/plugin-global-shortcut';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import useAppNotification from "~/composables/utility/useAppNotification";
+import useWindowControl from "~/composables/utility/useWindowControl";
+
+const $win = useWindowControl()
 
 onMounted(async () => {
 
@@ -9,18 +12,18 @@ onMounted(async () => {
         const win = getCurrentWindow()
         console.log('Shortcut triggered');
         if (event.state === 'Pressed') {
-            (await win.isVisible()) ? await win.hide() : (await win.show(), await win.setFocus());
+            if(await win.isVisible()) {
+                await win.hide()
+            } else {
+                await win.show()
+                await win.setFocus()
 
-            //! Disable these for debug purposes if you want to inspect HTML elements
-            await win.onFocusChanged(({payload: focused}) => {
-                if (!focused) win.hide();
-            });
+                //! Disable this for debug purposes
+                // await win.onFocusChanged(({payload: focused}) => {
+                //     if (!focused && unref($win.shouldHideOnBlur())) win.hide();
+                // });
+            }
         }
-    });
-
-    //! Disable these for debug purposes if you want to inspect HTML elements
-    await getCurrentWindow().onFocusChanged(({payload: focused}) => {
-        if (!focused) getCurrentWindow().hide();
     });
 
     await useAppNotification().initialize()

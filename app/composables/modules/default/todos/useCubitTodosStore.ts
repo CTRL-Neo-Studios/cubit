@@ -1,0 +1,165 @@
+import {load, LazyStore} from "@tauri-apps/plugin-store";
+import type {CubitModuleTodosConfig, CubitTodo} from "~~/types/modules/cubit-modules.types";
+import defaultCubitModuleTodosConfig from "~/utils/defaults/defaultCubitModuleTodosConfig";
+import useUuid from "~/composables/utility/useUuid";
+import type {DeepPartial} from "#ui/types";
+
+export default function useCubitTodosStore() {
+    const $keywords = {
+        'store.fileName': 'todos.json',
+        'store.keys.content': 'todos',
+        'store.keys.config': 'config'
+    }
+
+    const $store = new LazyStore($keywords['store.fileName'], {autoSave: true})
+    const $content = useState<CubitTodo[]>('app.modules.todo.content', () => [])
+    const $config = useState<CubitModuleTodosConfig>('app.modules.todo.config', () => defaultCubitModuleTodosConfig())
+    const $groupTagsIndex = useState<string[]>('app.modules.todo.groupTagsIndex', () => [])
+
+    async function save() {
+        await $store.set($keywords['store.keys.content'], unref($content))
+        await $store.set($keywords['store.keys.config'], unref($config))
+        await $store.save()
+    }
+
+    async function load() {
+        let dirty: boolean = false
+        const fetchedContent = await $store.get<CubitTodo[]>($keywords['store.keys.content'])
+        const fetchedConfig = await $store.get<CubitModuleTodosConfig>($keywords['store.keys.config'])
+
+        if (!fetchedContent) {
+            await $store.set($keywords['store.keys.content'], [])
+            dirty = true
+        }
+        if (!fetchedConfig) {
+            await $store.set($keywords['store.keys.config'], defaultCubitModuleTodosConfig())
+            dirty = true
+        }
+
+        $groupTagsIndex.value = indexGroupTags()
+
+        if (dirty) await save()
+
+        $content.value = fetchedContent || []
+        $config.value = fetchedConfig || defaultCubitModuleTodosConfig()
+
+        indexGroupTags()
+    }
+
+    async function addTodos(todos: Omit<CubitTodo, 'id'>[], refreshIndex: boolean = true) {
+        const withIds = todos.map(t => ({
+            ...t,
+            id: useUuid()
+        }))
+        $content.value.push(...withIds)
+
+        if (refreshIndex)
+            indexGroupTags()
+
+        await save()
+    }
+
+    async function removeTodos(todos: (CubitTodo | string)[], refreshIndex: boolean = true) {
+        const toDelete = new Set(
+            todos.map(t => (typeof t === 'string' ? t : t.id))
+        )
+        $content.value = $content.value.filter(t => !toDelete.has(t.id))
+
+        if (refreshIndex)
+            indexGroupTags()
+    }
+
+    async function updateTodos(updates: (DeepPartial<CubitTodo> & { id: string })[]) {
+        const patchMap = new Map(updates.map(u => [u.id, u]))
+
+        for (let i = 0; i < $content.value.length; i++) {
+            const patch = patchMap.get($content.value[i]!.id)
+            if (patch) {
+                $content.value[i] = { ...$content.value[i]!, ...patch }
+            }
+        }
+        await save()
+    }
+
+    function indexGroupTags(): string[] {
+        const seen = new Set<string>()
+
+        for (const todo of unref($content)) {
+            const tag = todo.groupTag?.trim()
+            if (!tag) continue
+
+            seen.add(tag) // full tag
+            // add every parent segment: School/Assignments/Test → School, School/Assignments
+            let slice = ''
+            for (const part of tag.split('/')) {
+                slice = slice ? `${slice}/${part}` : part
+                seen.add(slice)
+            }
+        }
+
+        return Array.from(seen).sort((a, b) => a.localeCompare(b))
+    }
+
+    function isTodoChecked(todoId: string): boolean {
+        return unref($content)
+            .find(i => i.id == todoId && i.checked) != undefined
+    }
+
+    async function checkTodos(todos: (CubitTodo | string)[]) {
+        const toCheck = new Set(todos.map(t => (typeof t === 'string' ? t : t.id)))
+        let changed = false
+
+        $content.value.forEach(todo => {
+            if (toCheck.has(todo.id) && !todo.checked) {
+                todo.checked = true
+                changed = true
+            }
+        })
+
+        if (changed) await save()
+    }
+
+    async function uncheckTodos(todos: (CubitTodo | string)[]) {
+        const toUncheck = new Set(todos.map(t => (typeof t === 'string' ? t : t.id)))
+        let changed = false
+
+        $content.value.forEach(todo => {
+            if (toUncheck.has(todo.id) && todo.checked) {
+                todo.checked = false
+                changed = true
+            }
+        })
+
+        if (changed) await save()
+    }
+
+    async function toggleTodos(todos: (CubitTodo | string)[]) {
+        const toToggle = new Set(todos.map(t => (typeof t === 'string' ? t : t.id)))
+        let changed = false
+
+        $content.value.forEach(todo => {
+            if (toToggle.has(todo.id)) {
+                todo.checked = !todo.checked
+                changed = true
+            }
+        })
+
+        if (changed) await save()
+    }
+
+    return {
+        todos: $content,
+        config: $config,
+        tags: $groupTagsIndex,
+        save,
+        load,
+        addTodos,
+        removeTodos,
+        updateTodos,
+        indexGroupTags,
+        isTodoChecked,
+        checkTodos,
+        uncheckTodos,
+        toggleTodos,
+    }
+}

@@ -8,3 +8,21 @@ export interface CubitModule {
     moduleName: string | 'Unnamed Module',
     moduleId: string | 'default-module-id' // Kebab case, alphanumeric
 }
+
+export interface CubitTodo {
+    id: string,
+}
+
+export interface CubitTodo {
+    id: string,
+    title: string,
+    icon?: string,
+    description?: string,
+    groupTag?: string,
+    dueDate?: Date,
+    checked: boolean,
+}
+
+export interface CubitModuleTodosConfig {
+    notifyOnTodoExpire: boolean
+}

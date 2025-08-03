@@ -4,6 +4,7 @@ import {Size} from "@tauri-apps/api/dpi";
 export default function () {
     const DEFAULT_WIDTH: number = 600
     const DEFAULT_HEIGHT: number = 300
+    const hideWindowOnBlur = useState<boolean>('app.windowControls.hideWindowOnBlur', () => true)
 
     async function resetWindowSizeToDefault() {
         await getCurrentWindow().setSize(new LogicalSize(DEFAULT_WIDTH, DEFAULT_HEIGHT))
@@ -43,6 +44,14 @@ export default function () {
         await getWindow().hide()
     }
 
+    function setShouldHideOnBlur(value: boolean) {
+        hideWindowOnBlur.value = value
+    }
+
+    function shouldHideOnBlur() {
+        return hideWindowOnBlur
+    }
+
     return {
         resetWindowSizeToDefault,
         setWindowLogicalSize,
@@ -51,6 +60,8 @@ export default function () {
         getWindowLogicalSize,
         getWindow,
         centerWindow,
-        hideWindow
+        hideWindow,
+        setShouldHideOnBlur,
+        shouldHideOnBlur,
     }
 }
