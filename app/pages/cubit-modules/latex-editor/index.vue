@@ -33,7 +33,7 @@ const actions = ref([
             <CubitUtilityMathjaxEditor v-model="latexValue" class="w-full h-full"/>
         </ClientOnly>
         <template #footer="{actionsOpen}">
-            <CubitModuleNavigationFooter title="LaTeX Editor" :actions :actions-open="actionsOpen"/>
+            <CubitModuleNavigationFooter title="LaTeX Editor" :actions :actionsOpen/>
         </template>
     </CubitModuleNavigationLayout>
 </template>

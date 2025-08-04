@@ -1,11 +1,11 @@
 <!-- CubitUtilityMathjaxEditor.client.vue -->
 <script setup lang="ts">
 import { ref, watch, nextTick, onMounted } from 'vue'
-import useWindowControl from '~/composables/utility/useWindowControl'
+import useAppWindow from '~/composables/app/useAppWindow'
 
 const model = defineModel<string>({ default: '' })
 
-const $win = useWindowControl()
+const $win = useAppWindow()
 
 const rendered = ref<HTMLDivElement>()
 

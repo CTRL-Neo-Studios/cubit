@@ -2,6 +2,13 @@ export interface CubitModulesConfig {
     addDefaultModules: boolean
 }
 
+export interface CubitModuleGroup {
+    groupId: string,
+    groupName: string,
+    groupIcon?: string,
+    modules: CubitModule[]
+}
+
 export interface CubitModule {
     routePath?: string,
     moduleIcon: string | 'i-lucide-codesandbox',

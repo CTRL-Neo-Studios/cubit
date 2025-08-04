@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { register } from '@tauri-apps/plugin-global-shortcut';
 import { getCurrentWindow } from '@tauri-apps/api/window';
-import useAppNotification from "~/composables/utility/useAppNotification";
-import useWindowControl from "~/composables/utility/useWindowControl";
+import useAppNotification from "~/composables/app/useAppNotification";
+import useAppWindow from "~/composables/app/useAppWindow";
 
-const $win = useWindowControl()
+const $win = useAppWindow()
 
 onMounted(async () => {
 
@@ -28,7 +28,7 @@ onMounted(async () => {
 
     await useAppNotification().initialize()
 
-    await useAppNotification().notify("Cubit", "Cubit is opened and running in the background.")
+    await useAppNotification().notifyMessage("Cubit", "Cubit is opened and running in the background.")
 })
 </script>
 
@@ -41,6 +41,11 @@ onMounted(async () => {
 </template>
 
 <style>
+
+body {
+    @apply bg-transparent
+}
+
 .page-enter-active,
 .page-leave-active {
     transition: all 0.15s;

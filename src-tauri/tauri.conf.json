@@ -22,6 +22,10 @@
         "alwaysOnTop": true,
         "transparent": true,
         "decorations": false,
+        "skipTaskbar": true,
+        "windowEffects": {
+          "effects": ["mica"]
+        },
         "center": true
       }
     ],

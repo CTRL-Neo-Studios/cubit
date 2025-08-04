@@ -3,8 +3,12 @@ import type {CubitModuleTodosConfig, CubitTodo} from "~~/types/modules/cubit-mod
 import defaultCubitModuleTodosConfig from "~/utils/defaults/defaultCubitModuleTodosConfig";
 import useUuid from "~/composables/utility/useUuid";
 import type {DeepPartial} from "#ui/types";
+import useAppNotification from "~/composables/app/useAppNotification";
+import {today, getLocalTimeZone, CalendarDate} from '@internationalized/date'
 
 export default function useCubitTodosStore() {
+    const $notif = useAppNotification()
+
     const $keywords = {
         'store.fileName': 'todos.json',
         'store.keys.content': 'todos',
@@ -44,6 +48,8 @@ export default function useCubitTodosStore() {
         $config.value = fetchedConfig || defaultCubitModuleTodosConfig()
 
         indexGroupTags()
+
+        await notifyExpiredTodos()
     }
 
     async function addTodos(todos: Omit<CubitTodo, 'id'>[], refreshIndex: boolean = true) {
@@ -147,6 +153,21 @@ export default function useCubitTodosStore() {
         if (changed) await save()
     }
 
+    async function notifyExpiredTodos() {
+        const expiredTodos = unref($content).filter(i => i.dueDate != null &&
+            ((new CalendarDate(
+                i.dueDate?.getFullYear(),
+                i.dueDate?.getMonth() + 1,
+                i.dueDate?.getDate()
+            )).compare(today(getLocalTimeZone())) > 0))
+
+        if (expiredTodos.length > 0)
+            await $notif.notify({
+                title: 'Cubit',
+                body: `You have ${expiredTodos.length} expired todos.`
+            })
+    }
+
     return {
         todos: $content,
         config: $config,
@@ -161,5 +182,6 @@ export default function useCubitTodosStore() {
         checkTodos,
         uncheckTodos,
         toggleTodos,
+        notifyExpiredTodos
     }
 }

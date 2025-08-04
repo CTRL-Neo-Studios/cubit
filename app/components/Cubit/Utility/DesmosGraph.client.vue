@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue';
-import useWindowControl from "~/composables/utility/useWindowControl";
+import useAppWindow from "~/composables/app/useAppWindow";
 
-const $win = useWindowControl()
+const $win = useAppWindow()
 
 const el = ref<HTMLDivElement>();
 let calc: Desmos.Calculator;

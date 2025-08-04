@@ -1,31 +1,49 @@
 <script setup lang="ts">
-import {getCurrentWindow, LogicalSize} from '@tauri-apps/api/window';
 import {defaultModules} from "~/logic/defaultModules";
-import useWindowControl from "~/composables/utility/useWindowControl";
+import useAppWindow from "~/composables/app/useAppWindow";
+import CubitModuleNavigationLayout from "~/components/Cubit/Layout/Module/CubitModuleNavigationLayout.vue";
+import CubitModuleNavigationFooter from "~/components/Cubit/Layout/Module/CubitModuleNavigationFooter.vue";
+import useCubitRoutes from "~/composables/general/useCubitRoutes";
 
-const $win = useWindowControl()
-
-defineShortcuts({
-    'escape': {
-        async handler() {
-            await $win.hideWindow()
-        },
-        usingInput: true
-    }
-})
+const $win = useAppWindow()
+const $cr = useCubitRoutes()
 
 
-await getCurrentWindow().setSize(new LogicalSize(600, 300));
+await $win.resetWindowSizeToDefault();
+await $win.centerWindow();
 
 const commandPalette = ref([
-    {
-        id: 'default-modules',
-        items: defaultModules().map(i => ({id: i.moduleId, label: i.moduleName, icon: i.moduleIcon, to: `/cubit-modules/${i.moduleId}`}))
-    }
+    ...defaultModules().map(i => ({
+        id: i.groupId,
+        label: i.groupName,
+        icon: i.groupIcon,
+        items: i.modules.map(m => ({
+            id: m.moduleId,
+            label: m.moduleName,
+            icon: m.moduleIcon || 'i-lucide-codesandbox',
+            async onSelect() {
+                await $cr.toModules(m.moduleId)
+            }
+        }))
+    }))
 ])
 const value = ref({})
 </script>
 
 <template>
-    <UCommandPalette autofocus v-model="value" :groups="commandPalette"/>
+    <CubitModuleNavigationLayout
+        icon="i-lucide-search"
+        footer
+        header
+        autofocus
+        placeholder="Search for action..."
+        :groups="commandPalette"
+        :escape-handler="async () => {
+            await $win.hideWindow()
+        }"
+    >
+        <template #footer="{actionsOpen}">
+            <CubitModuleNavigationFooter :actionsOpen/>
+        </template>
+    </CubitModuleNavigationLayout>
 </template>

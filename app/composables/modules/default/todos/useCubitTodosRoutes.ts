@@ -1,9 +1,9 @@
 import useCubitRoutes from "~/composables/general/useCubitRoutes";
-import useWindowControl from "~/composables/utility/useWindowControl";
+import useAppWindow from "~/composables/app/useAppWindow";
 
 export default function useCubitTodosRoutes() {
     const $routes = useCubitRoutes()
-    const $win = useWindowControl()
+    const $win = useAppWindow()
 
     async function toCreateTodoPage() {
         await $routes.toModules('todos/create')

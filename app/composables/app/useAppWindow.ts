@@ -1,7 +1,7 @@
 import {getCurrentWindow, LogicalSize} from "@tauri-apps/api/window";
 import {Size} from "@tauri-apps/api/dpi";
 
-export default function () {
+export default function useAppWindow() {
     const DEFAULT_WIDTH: number = 600
     const DEFAULT_HEIGHT: number = 300
     const hideWindowOnBlur = useState<boolean>('app.windowControls.hideWindowOnBlur', () => true)

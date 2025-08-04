@@ -1,15 +1,6 @@
 <script setup lang="ts">
 import type {CommandPaletteGroup, CommandPaletteItem} from "@nuxt/ui";
 
-defineShortcuts({
-    'meta_k': {
-        async handler() {
-            actionsOpen.value = !unref(actionsOpen)
-        },
-        usingInput: true
-    }
-})
-
 const actionsValue = defineModel<string>({default: ''})
 const actionsOpen = defineModel<boolean>('actionsOpen', {default: false})
 const actionsSearchTerm = defineModel<string>('actionsSearchTerm', {default: ''})

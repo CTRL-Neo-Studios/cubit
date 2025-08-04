@@ -1,4 +1,4 @@
-import {isPermissionGranted, requestPermission, sendNotification} from "@tauri-apps/plugin-notification";
+import {isPermissionGranted, type Options, requestPermission, sendNotification} from "@tauri-apps/plugin-notification";
 
 export default function () {
     const permissionGranted = useState<boolean>('app.perms.notify.granted', () => false)
@@ -22,7 +22,7 @@ export default function () {
         return unref(permissionGranted)
     }
 
-    async function notify(title: string, body: string) {
+    async function notifyMessage(title: string, body: string) {
         if(!(await askPermIfNotGranted())) return;
         sendNotification({
             title: title,
@@ -30,9 +30,15 @@ export default function () {
         })
     }
 
+    async function notify(options: Options) {
+        if(!(await askPermIfNotGranted())) return;
+        sendNotification(options)
+    }
+
     return {
         initialize,
         askPermIfNotGranted,
+        notifyMessage,
         notify
     }
 }

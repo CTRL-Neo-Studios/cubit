@@ -1,7 +1,7 @@
-import useWindowControl from "~/composables/utility/useWindowControl";
+import useAppWindow from "~/composables/app/useAppWindow";
 
 export default function () {
-    const $win = useWindowControl()
+    const $win = useAppWindow()
 
     async function toMainMenu(recenterWindow?: boolean, resetWindowSize?: boolean) {
         await navigateTo('/')

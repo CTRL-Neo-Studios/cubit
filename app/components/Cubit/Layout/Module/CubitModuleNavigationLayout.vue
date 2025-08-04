@@ -8,10 +8,12 @@ const actionsOpen = ref(false)
 
 const $cr = useCubitRoutes()
 
-const props = defineProps<{placeholder?: string, loading?: boolean, header?: boolean, footer?: boolean, groups?: CommandPaletteGroup<CommandPaletteItem>[], permeatedSlots?: string[], escapeHandler?: () => void | Promise<void>}>()
+const props = defineProps<{placeholder?: string, loading?: boolean, header?: boolean, footer?: boolean, groups?: CommandPaletteGroup<CommandPaletteItem>[], permeatedSlots?: string[], escapeHandler?: () => void | Promise<void>, icon?: string}>()
 const emits = defineEmits<{
     (e: 'selected', args: CustomEvent<any>, entry: AcceptableValue | AcceptableValue[] | undefined): void
 }>()
+
+
 
 defineShortcuts({
     'escape': {
@@ -25,6 +27,15 @@ defineShortcuts({
                     await $cr.toMainMenu(true, true)
                 }
             }
+        },
+        usingInput: true
+    },
+    'meta_k': {
+        async handler() {
+            if (props?.footer)
+                actionsOpen.value = !unref(actionsOpen)
+            else
+                actionsOpen.value = false
         },
         usingInput: true
     }
@@ -56,8 +67,12 @@ const forwardedSlots = computed(() =>
     <div class="w-full h-full">
         <UCommandPalette
             :loading="props.loading"
-            :ui="{ root: 'h-screen! u-command-palette', content: 'h-full', empty: 'p-0 h-full' }"
-            icon="i-lucide-arrow-left"
+            :ui="{
+                root: 'h-screen! u-command-palette',
+                content: 'h-full',
+                empty: 'p-0 h-full'
+            }"
+            :icon="props?.icon || 'i-lucide-arrow-left'"
             :groups="props.groups != null ? props.groups : placeholderGroups"
             :disabled="!props?.header"
             v-model:searchTerm="model"
@@ -70,7 +85,7 @@ const forwardedSlots = computed(() =>
         >
             <!-- keep these explicit -->
             <template #empty><slot name="default" /><slot name="empty" /></template>
-            <template #footer v-if="props.footer"><slot name="footer" /></template>
+            <template #footer v-if="props.footer"><slot name="footer" :actionsOpen="actionsOpen" /></template>
 
             <!-- forward everything else -->
             <template
@@ -78,7 +93,7 @@ const forwardedSlots = computed(() =>
                 :key="name"
                 #[name]="slotData"
             >
-                <slot :name="name" v-bind="slotData" />
+                <slot :name="name" v-bind="slotData" :actionsOpen="actionsOpen" />
             </template>
         </UCommandPalette>
     </div>

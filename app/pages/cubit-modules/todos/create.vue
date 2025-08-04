@@ -7,13 +7,13 @@ import type {FormSubmitEvent} from "@nuxt/ui";
 import useCubitTodosStore from "~/composables/modules/default/todos/useCubitTodosStore";
 import useCubitTodosRoutes from "~/composables/modules/default/todos/useCubitTodosRoutes";
 import useQuickToasts from "~/composables/utility/useQuickToasts";
-import useWindowControl from "~/composables/utility/useWindowControl";
+import useAppWindow from "~/composables/app/useAppWindow";
 import CubitModuleNavigationFooter from "~/components/Cubit/Layout/Module/CubitModuleNavigationFooter.vue";
 
 const $qt = useQuickToasts()
 const $troutes = useCubitTodosRoutes()
 const $todos = useCubitTodosStore()
-const $win = useWindowControl()
+const $win = useAppWindow()
 const loading = ref(false)
 
 onMounted(async () => {
@@ -99,7 +99,7 @@ function onCreateTag(item: string) {
                         </UPopover>
                     </UFormField>
                     <UFormField label="Group Tag" name="groupTag" class="w-full">
-                        <UInputMenu v-model="state.groupTag" @create="onCreateTag" :items="$todos.tags.value" class="w-full" />
+                        <UInputMenu v-model="state.groupTag" create-item @create="onCreateTag" :items="$todos.tags.value" class="w-full" />
                     </UFormField>
                     <UFormField label="Icon" name="icon" class="w-full">
                         <UInput
