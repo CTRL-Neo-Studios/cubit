@@ -83,6 +83,10 @@ watch(actionsOpen, async (open) => {
 const forwardedSlots = computed(() =>
     Object.keys(useSlots()).filter(n => !['empty', 'footer'].includes(n))
 )
+
+function closeActions() {
+    actionsOpen.value = false
+}
 </script>
 
 <template>
@@ -93,9 +97,10 @@ const forwardedSlots = computed(() =>
                 root: 'h-screen! u-command-palette',
                 content: 'h-full',
                 empty: 'p-0 h-full',
-                item: 'data-highlighted:not-data-disabled:before:bg-primary',
-                itemLabelBase: 'group-data-highlighted:text-inverted',
-                itemLeadingIcon: 'group-data-highlighted:not-group-data-disabled:text-inverted'
+                footer: 'bg-gradient-to-r from-primary-50 via-default to-default rounded-lg',
+                // item: 'data-highlighted:not-data-disabled:before:bg-primary',
+                // itemLabelBase: 'group-data-highlighted:text-inverted',
+                // itemLeadingIcon: 'group-data-highlighted:not-group-data-disabled:text-inverted'
             }"
             :icon="props?.icon"
             :groups="props?.groups"
@@ -110,7 +115,7 @@ const forwardedSlots = computed(() =>
         >
             <!-- keep these explicit -->
             <template #empty><slot name="default" /><slot name="empty" /></template>
-            <template #footer v-if="props.footer"><slot name="footer" :actionsOpen="actionsOpen" /></template>
+            <template #footer v-if="props.footer"><slot name="footer" :actionsOpen="actionsOpen" :closeActions="closeActions" /></template>
 
             <!-- forward everything else -->
             <template
@@ -118,7 +123,7 @@ const forwardedSlots = computed(() =>
                 :key="name"
                 #[name]="slotData"
             >
-                <slot :name="name" v-bind="slotData" :actionsOpen="actionsOpen" />
+                <slot :name="name" v-bind="slotData" :actionsOpen="actionsOpen" :closeActions="closeActions" />
             </template>
         </UCommandPalette>
     </div>

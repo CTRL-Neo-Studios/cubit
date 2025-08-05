@@ -16,8 +16,10 @@ export default function () {
         permissionGranted.value = await isPermissionGranted();
 
         if (!unref(permissionGranted)) {
+            console.log('Requesting Permission...')
             const permission = await requestPermission();
             permissionGranted.value = permission === 'granted';
+            console.log('Permission granted.')
         }
         return unref(permissionGranted)
     }

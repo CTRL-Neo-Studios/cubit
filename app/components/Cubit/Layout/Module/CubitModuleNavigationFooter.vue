@@ -6,11 +6,11 @@ const actionsOpen = defineModel<boolean>('actionsOpen', {default: false})
 const actionsSearchTerm = defineModel<string>('actionsSearchTerm', {default: ''})
 const actionsSearchPlaceholder = defineModel<string>('actionsSearchPlaceholder', {default: 'Search Action...'})
 
-const props = defineProps<{title?: string, actions?: CommandPaletteGroup<CommandPaletteItem>[]}>()
+const props = defineProps<{title?: string, actions?: CommandPaletteGroup<CommandPaletteItem>[], closeActions?: () => void}>()
 </script>
 
 <template>
-    <div class="flex items-center justify-start gap-2">
+    <div class="flex items-center justify-start gap-2 bg-gradient-to-r from-primary-50 via-default to-default">
         <UIcon name="i-simple-icons-nuxtdotjs" class="size-5 text-primary ml-1" />
         <div class="text-left text-xs text-muted" v-if="props?.title">{{props.title}}</div>
         <div class="flex-grow"/>
@@ -29,7 +29,7 @@ const props = defineProps<{title?: string, actions?: CommandPaletteGroup<Command
                             @update:searchTerm="value => {actionsSearchTerm = value;}"
                             :groups="props.actions"
                             :placeholder="actionsSearchPlaceholder"
-                            @update:modelValue="args => actionsOpen = false"
+                            @update:modelValue="args => {actionsOpen = false; if (props?.closeActions) props?.closeActions()}"
                         />
                     </template>
                 </UPopover>

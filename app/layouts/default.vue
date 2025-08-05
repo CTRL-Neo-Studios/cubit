@@ -4,7 +4,7 @@
 
 <template>
     <div>
-        <div class="w-full max-h-screen">
+        <div class="w-full max-h-screen rounded-lg bg-default/90">
             <slot/>
         </div>
     </div>

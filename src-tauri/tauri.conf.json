@@ -11,6 +11,7 @@
   },
   "app": {
     "withGlobalTauri": true,
+    "macOSPrivateApi": true,
     "windows": [
       {
         "title": "Cubit",
@@ -24,7 +25,8 @@
         "decorations": false,
         "skipTaskbar": true,
         "windowEffects": {
-          "effects": ["acrylic", "windowBackground"]
+          "effects": ["acrylic", "underWindowBackground"],
+          "radius": 10
         },
         "center": true,
         "shadow": true,

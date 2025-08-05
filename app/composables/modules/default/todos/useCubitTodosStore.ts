@@ -4,7 +4,8 @@ import defaultCubitModuleTodosConfig from "~/utils/defaults/defaultCubitModuleTo
 import useUuid from "~/composables/utility/useUuid";
 import type {DeepPartial} from "#ui/types";
 import useAppNotification from "~/composables/app/useAppNotification";
-import {today, getLocalTimeZone, CalendarDate} from '@internationalized/date'
+import {today, getLocalTimeZone, CalendarDate, type DateValue} from '@internationalized/date'
+import {isBefore, isBetween} from 'reka-ui/date'
 import useQuickToasts from "~/composables/utility/useQuickToasts";
 
 export default function useCubitTodosStore() {
@@ -156,19 +157,21 @@ export default function useCubitTodosStore() {
     }
 
     async function notifyExpiredTodos() {
-        const now = today(getLocalTimeZone())
+        const now = new Date()
 
         // safest: create a JS-Date at 00:00 local time, then convert
         const expiredTodos = unref($content)?.filter(t => {
-            if (!t.dueDate) return false
-            return t.dueDate < now
+            if (!t.dueDate || t.checked) return false
+            const dueDate = new Date(t.dueDate)
+            return dueDate.getDay() < now.getDay()
         }), dueTodayTodos = unref($content)?.filter(t => {
-            if (!t.dueDate) return false
-            return t.dueDate == now
+            if (!t.dueDate || t.checked) return false
+            const dueDate = new Date(t.dueDate)
+            return dueDate.getDay() == now.getDay()
         })
 
 
-        if (expiredTodos.length) {
+        if (expiredTodos.length > 0) {
             $qt.info(`You have ${expiredTodos.length} expired todo(s).`)
             await $notif.notify({
                 title: 'Cubit',
@@ -177,7 +180,7 @@ export default function useCubitTodosStore() {
         }
 
 
-        if (dueTodayTodos.length) {
+        if (dueTodayTodos.length > 0) {
             $qt.info(`You have ${dueTodayTodos.length} todo(s) due today.`)
             await $notif.notify({
                 title: 'Cubit',

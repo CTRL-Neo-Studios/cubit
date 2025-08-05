@@ -8,7 +8,7 @@ const $win = useAppWindow()
 
 onMounted(async () => {
 
-    await register('CmdOrControl+Space', async (event) => {
+    await register('CmdOrControl+Period', async (event) => {
         const win = getCurrentWindow()
         console.log('Shortcut triggered');
         if (event.state === 'Pressed') {
@@ -44,7 +44,7 @@ onMounted(async () => {
 @reference "~/assets/css/main.css";
 
 body {
-    @apply bg-default/90;
+    @apply bg-transparent;
 }
 
 .page-enter-active,

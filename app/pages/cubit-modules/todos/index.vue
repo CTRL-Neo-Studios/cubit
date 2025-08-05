@@ -35,12 +35,16 @@ const { data, pending, refresh } = await useAsyncData('app.data.modules.todos', 
 const groups = ref<CommandPaletteGroup<CommandPaletteItem>[]>([])
 const selectedEntry = ref()
 
+onMounted(async () => {
+    // await refresh()
+})
+
 watch(() => data, (newData) => {
     groups.value = [
         {
             id: 'uncategorized-todos',
             items: unref(unref(newData)?.todos)?.map(i => ({
-                id: i.id,
+                id: i.id || '',
                 label: i.title,
                 suffix: i.description,
                 icon: i.icon,
@@ -73,8 +77,8 @@ async function onTodoSelected(entry: AcceptableValue | AcceptableValue[] | undef
         :permeated-slots="['uncategorized-todo']"
         footer
     >
-        <template #footer="{actionsOpen}">
-            <CubitModuleNavigationFooter :actionsOpen :actions/>
+        <template #footer="{actionsOpen, closeActions}">
+            <CubitModuleNavigationFooter :actionsOpen :actions :closeActions/>
         </template>
         <template #uncategorized-todo="{ item }">
             <UCheckbox @change="args => { if(args) {$todos.checkTodos([item.id])} else {$todos.uncheckTodos([item.id])} }" :label="item.label" :description="item?.suffix" :model-value="$todos.isTodoChecked(item.id)"/>

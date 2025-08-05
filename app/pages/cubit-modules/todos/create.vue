@@ -22,6 +22,7 @@ onMounted(async () => {
 
 const schema = z.object({
     title: z.string(),
+    dueDate: z.string().nullable().nullish(),
     description: z.string().nullable().nullish(),
     icon: z.string().nullable().nullish(),
     groupTag: z.string().nullable().nullish()
@@ -30,16 +31,11 @@ const schema = z.object({
 type Schema = z.output<typeof schema>
 
 const state = reactive<Partial<Schema>>({
-    title: undefined,
-    description: undefined,
+    title: '',
+    dueDate: null,
+    description: null,
     icon: 'star',
-    groupTag: undefined
-})
-
-const dueDate = ref(today(getLocalTimeZone()))
-
-const df = new DateFormatter('en-US', {
-    dateStyle: 'medium'
+    groupTag: null
 })
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
@@ -53,9 +49,9 @@ async function createTodo() {
             checked: false,
             icon: `i-lucide-${state.icon}` || 'i-lucide-star',
             title: state.title || 'Unnamed Todo',
-            description: state.description || '',
-            dueDate: unref(dueDate).toDate(getLocalTimeZone()),
-            groupTag: state.groupTag || '',
+            description: state.description || undefined,
+            dueDate: state.dueDate || undefined,
+            groupTag: state.groupTag || undefined,
         }])
         $qt.success('Successfully created a todo!')
     } catch (e: any) {
@@ -87,16 +83,8 @@ function onCreateTag(item: string) {
                     <UFormField label="Title" name="title" class="w-full" required>
                         <UInput v-model="state.title" class="w-full" autofocus/>
                     </UFormField>
-                    <UFormField label="Due Date" class="w-full">
-                        <UPopover>
-                            <UButton color="neutral" variant="subtle" icon="i-lucide-calendar" class="w-full">
-                                {{ dueDate ? df.format(dueDate.toDate(getLocalTimeZone())) : 'Select a date' }}
-                            </UButton>
-
-                            <template #content>
-                                <UCalendar v-model="dueDate" class="p-2" />
-                            </template>
-                        </UPopover>
+                    <UFormField label="Due Date" name="dueDate" class="w-full">
+                        <UInput type="date" v-model="state.dueDate" class="w-full"/>
                     </UFormField>
                     <UFormField label="Group Tag" name="groupTag" class="w-full">
                         <UInputMenu v-model="state.groupTag" create-item @create="onCreateTag" :items="$todos.tags.value" class="w-full" />

@@ -8,8 +8,8 @@ import CubitModuleNavigationFooter from "~/components/Cubit/Layout/Module/CubitM
         <ClientOnly>
             <CubitUtilityDesmosGraph class="w-full h-full"/>
         </ClientOnly>
-        <template #footer="{actionsOpen}">
-            <CubitModuleNavigationFooter title="Calculator" :actionsOpen/>
+        <template #footer="{actionsOpen, closeActions}">
+            <CubitModuleNavigationFooter title="Calculator" :actionsOpen :closeActions/>
         </template>
     </CubitModuleNavigationLayout>
 </template>
