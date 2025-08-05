@@ -41,9 +41,10 @@ onMounted(async () => {
 </template>
 
 <style>
+@reference "~/assets/css/main.css";
 
 body {
-    @apply bg-transparent
+    @apply bg-default/90;
 }
 
 .page-enter-active,

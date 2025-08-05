@@ -24,9 +24,11 @@
         "decorations": false,
         "skipTaskbar": true,
         "windowEffects": {
-          "effects": ["mica"]
+          "effects": ["acrylic", "windowBackground"]
         },
-        "center": true
+        "center": true,
+        "shadow": true,
+        "hiddenTitle": true
       }
     ],
     "security": {

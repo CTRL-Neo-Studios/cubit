@@ -8,17 +8,38 @@ const actionsOpen = ref(false)
 
 const $cr = useCubitRoutes()
 
-const props = defineProps<{placeholder?: string, loading?: boolean, header?: boolean, footer?: boolean, groups?: CommandPaletteGroup<CommandPaletteItem>[], permeatedSlots?: string[], escapeHandler?: () => void | Promise<void>, icon?: string}>()
+const props = withDefaults(defineProps<{
+    placeholder?: string, // Input field placeholder
+    loading?: boolean, // `true` disables the palette for loading
+    header?: boolean, // `true` Enables the input field
+    footer?: boolean, // `false` disables the footer slot
+    disableFooterActionsFirst?: boolean, // if `true`, when handling the escape key shortcut it'll set the actionsOpen value to false first
+    groups?: CommandPaletteGroup<CommandPaletteItem>[],
+    permeatedSlots?: string[],
+    escapeHandler?: () => void | Promise<void>,
+    icon?: string
+}>(), {
+    disableFooterActionsFirst: true,
+    loading: false,
+    header: true,
+    footer: false,
+    icon: 'i-lucide-arrow-left',
+    placeholder: 'Back',
+    groups: () => [
+        {
+            id: 'module',
+            items: []
+        }
+    ]
+})
 const emits = defineEmits<{
     (e: 'selected', args: CustomEvent<any>, entry: AcceptableValue | AcceptableValue[] | undefined): void
 }>()
 
-
-
 defineShortcuts({
     'escape': {
         async handler() {
-            if (unref(actionsOpen))
+            if (unref(actionsOpen) && props?.disableFooterActionsFirst)
                 actionsOpen.value = false
             else {
                 if (props.escapeHandler) {
@@ -26,6 +47,7 @@ defineShortcuts({
                 } else {
                     await $cr.toMainMenu(true, true)
                 }
+                actionsOpen.value = false
             }
         },
         usingInput: true
@@ -70,14 +92,17 @@ const forwardedSlots = computed(() =>
             :ui="{
                 root: 'h-screen! u-command-palette',
                 content: 'h-full',
-                empty: 'p-0 h-full'
+                empty: 'p-0 h-full',
+                item: 'data-highlighted:not-data-disabled:before:bg-primary',
+                itemLabelBase: 'group-data-highlighted:text-inverted',
+                itemLeadingIcon: 'group-data-highlighted:not-group-data-disabled:text-inverted'
             }"
-            :icon="props?.icon || 'i-lucide-arrow-left'"
-            :groups="props.groups != null ? props.groups : placeholderGroups"
+            :icon="props?.icon"
+            :groups="props?.groups"
             :disabled="!props?.header"
             v-model:searchTerm="model"
             v-model="selectedEntry"
-            :placeholder="props?.placeholder !== undefined ? props.placeholder : 'Back'"
+            :placeholder="props?.placeholder"
             autofocus
             @entryFocus="args => {
                 emits('selected', args, selectedEntry)
