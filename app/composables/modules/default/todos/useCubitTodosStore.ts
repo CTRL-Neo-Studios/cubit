@@ -5,9 +5,11 @@ import useUuid from "~/composables/utility/useUuid";
 import type {DeepPartial} from "#ui/types";
 import useAppNotification from "~/composables/app/useAppNotification";
 import {today, getLocalTimeZone, CalendarDate} from '@internationalized/date'
+import useQuickToasts from "~/composables/utility/useQuickToasts";
 
 export default function useCubitTodosStore() {
     const $notif = useAppNotification()
+    const $qt = useQuickToasts()
 
     const $keywords = {
         'store.fileName': 'todos.json',
@@ -154,18 +156,34 @@ export default function useCubitTodosStore() {
     }
 
     async function notifyExpiredTodos() {
-        const expiredTodos = unref($content).filter(i => i.dueDate != null &&
-            ((new CalendarDate(
-                i.dueDate?.getFullYear(),
-                i.dueDate?.getMonth() + 1,
-                i.dueDate?.getDate()
-            )).compare(today(getLocalTimeZone())) > 0))
+        const now = today(getLocalTimeZone())
 
-        if (expiredTodos.length > 0)
+        // safest: create a JS-Date at 00:00 local time, then convert
+        const expiredTodos = unref($content)?.filter(t => {
+            if (!t.dueDate) return false
+            return t.dueDate < now
+        }), dueTodayTodos = unref($content)?.filter(t => {
+            if (!t.dueDate) return false
+            return t.dueDate == now
+        })
+
+
+        if (expiredTodos.length) {
+            $qt.info(`You have ${expiredTodos.length} expired todo(s).`)
             await $notif.notify({
                 title: 'Cubit',
-                body: `You have ${expiredTodos.length} expired todos.`
-            })
+                body: `You have ${expiredTodos.length} expired todo(s).`
+            });
+        }
+
+
+        if (dueTodayTodos.length) {
+            $qt.info(`You have ${dueTodayTodos.length} todo(s) due today.`)
+            await $notif.notify({
+                title: 'Cubit',
+                body: `You have ${dueTodayTodos.length} todo(s) due today.`
+            });
+        }
     }
 
     return {

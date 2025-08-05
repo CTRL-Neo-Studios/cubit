@@ -1,3 +1,5 @@
+import type {CalendarDate} from "@internationalized/date";
+
 export interface CubitModulesConfig {
     addDefaultModules: boolean
 }
@@ -26,7 +28,7 @@ export interface CubitTodo {
     icon?: string,
     description?: string,
     groupTag?: string,
-    dueDate?: Date,
+    dueDate?: CalendarDate,
     checked: boolean,
 }
 
