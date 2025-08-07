@@ -27,7 +27,7 @@ const commandPalette = ref([
         }))
     }))
 ])
-const value = ref({})
+const selectedEntry = ref()
 </script>
 
 <template>
@@ -41,6 +41,7 @@ const value = ref({})
         :escape-handler="async () => {
             await $win.hideWindow()
         }"
+        v-model="selectedEntry"
     >
         <template #footer="{actionsOpen}">
             <CubitModuleNavigationFooter :actionsOpen/>

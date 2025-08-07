@@ -23,27 +23,26 @@ const actions = ref([
         ]
     }
 ])
-const { data, pending, refresh } = await useAsyncData('app.data.modules.todos', async () => {
-    await $todos.load()
-    console.log('wtf')
-    return {
-        todos: $todos.todos,
-        config: $todos.config,
-        tags: $todos.tags
-    }
-})
+const loading = ref(false)
+// const { data, pending, refresh } = await useAsyncData('app.data.modules.todos', async () => {
+//     await $todos.load()
+//     console.log('wtf')
+//     return {
+//         todos: $todos.todos,
+//         config: $todos.config,
+//         tags: $todos.tags
+//     }
+// })
 const groups = ref<CommandPaletteGroup<CommandPaletteItem>[]>([])
 const selectedEntry = ref()
 
 onMounted(async () => {
-    // await refresh()
-})
-
-watch(() => data, (newData) => {
+    loading.value = true
+    await $todos.load()
     groups.value = [
         {
             id: 'uncategorized-todos',
-            items: unref(unref(newData)?.todos)?.map(i => ({
+            items: unref($todos.todos)?.map(i => ({
                 id: i.id || '',
                 label: i.title,
                 suffix: i.description,
@@ -57,7 +56,8 @@ watch(() => data, (newData) => {
             items: []
         }
     ]
-}, {immediate: true})
+    loading.value = false
+})
 
 async function onTodoSelected(entry: AcceptableValue | AcceptableValue[] | undefined) {
     selectedEntry.value = {}
@@ -67,13 +67,13 @@ async function onTodoSelected(entry: AcceptableValue | AcceptableValue[] | undef
 
 <template>
     <CubitModuleNavigationLayout
-        :loading="pending"
+        :loading
         placeholder="Search for todo..."
         :groups
-        :header="true"
+        header
         class="w-full h-full"
-        v-model:selected-entry="selectedEntry"
-        @update:selectedEntry="onTodoSelected"
+        v-model="selectedEntry"
+        @update:model-value="onTodoSelected"
         :permeated-slots="['uncategorized-todo']"
         footer
     >

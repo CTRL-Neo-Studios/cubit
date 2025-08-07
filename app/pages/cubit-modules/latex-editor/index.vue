@@ -24,8 +24,8 @@ const actions = ref([
 <template>
     <CubitModuleNavigationLayout
         placeholder="Enter your LaTeX"
-        v-model="latexValue"
-        :header="true"
+        v-model:search-term="latexValue"
+        header
         class="w-full h-full"
         footer
     >

@@ -10,7 +10,7 @@ const props = defineProps<{title?: string, actions?: CommandPaletteGroup<Command
 </script>
 
 <template>
-    <div class="flex items-center justify-start gap-2 bg-gradient-to-r from-primary-50 via-default to-default">
+    <div class="flex items-center justify-start gap-2">
         <UIcon name="i-simple-icons-nuxtdotjs" class="size-5 text-primary ml-1" />
         <div class="text-left text-xs text-muted" v-if="props?.title">{{props.title}}</div>
         <div class="flex-grow"/>

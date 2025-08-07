@@ -2,8 +2,8 @@
 import useCubitRoutes from "~/composables/general/useCubitRoutes";
 import type {AcceptableValue, CommandPaletteGroup, CommandPaletteItem} from "@nuxt/ui";
 
-const model = defineModel<string>('modelValue', {default: ''})
-const selectedEntry = defineModel<AcceptableValue | AcceptableValue[] | undefined>('selectedEntry')
+const searchTerm = defineModel<string>('searchTerm', {default: ''})
+const selectedEntry = defineModel<AcceptableValue | AcceptableValue[] | undefined>()
 const actionsOpen = ref(false)
 
 const $cr = useCubitRoutes()
@@ -97,7 +97,7 @@ function closeActions() {
                 root: 'h-screen! u-command-palette',
                 content: 'h-full',
                 empty: 'p-0 h-full',
-                footer: 'bg-gradient-to-r from-primary-50 via-default to-default rounded-lg',
+                footer: 'bg-gradient-to-r from-primary-100 dark:from-primary-950 via-default to-default rounded-b-lg',
                 // item: 'data-highlighted:not-data-disabled:before:bg-primary',
                 // itemLabelBase: 'group-data-highlighted:text-inverted',
                 // itemLeadingIcon: 'group-data-highlighted:not-group-data-disabled:text-inverted'
@@ -105,7 +105,7 @@ function closeActions() {
             :icon="props?.icon"
             :groups="props?.groups"
             :disabled="!props?.header"
-            v-model:searchTerm="model"
+            v-model:search-term="searchTerm"
             v-model="selectedEntry"
             :placeholder="props?.placeholder"
             autofocus
@@ -115,7 +115,7 @@ function closeActions() {
         >
             <!-- keep these explicit -->
             <template #empty><slot name="default" /><slot name="empty" /></template>
-            <template #footer v-if="props.footer"><slot name="footer" :actionsOpen="actionsOpen" :closeActions="closeActions" /></template>
+            <template #footer v-if="props.footer"><slot name="footer" :actionsOpen :closeActions /></template>
 
             <!-- forward everything else -->
             <template
