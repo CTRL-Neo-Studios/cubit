@@ -4,12 +4,7 @@ export default function () {
     const permissionGranted = useState<boolean>('app.perms.notify.granted', () => false)
 
     async function initialize() {
-        permissionGranted.value = await isPermissionGranted();
-
-        if (!unref(permissionGranted)) {
-            const permission = await requestPermission();
-            permissionGranted.value = permission === 'granted';
-        }
+        await askPermIfNotGranted()
     }
 
     async function askPermIfNotGranted() {

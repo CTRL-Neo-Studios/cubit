@@ -33,6 +33,9 @@ pub fn run() {
             // 				main_window.set_window_level(25).unwrap();
             // 			}
 
+            #[cfg(target_os = "macos")]
+            app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+
             if cfg!(debug_assertions) {
                 app.handle().plugin(
                     tauri_plugin_log::Builder::default()

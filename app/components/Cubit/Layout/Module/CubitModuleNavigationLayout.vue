@@ -17,7 +17,8 @@ const props = withDefaults(defineProps<{
     groups?: CommandPaletteGroup<CommandPaletteItem>[],
     permeatedSlots?: string[],
     escapeHandler?: () => void | Promise<void>,
-    icon?: string
+    icon?: string,
+    horizontalLayout?: boolean,
 }>(), {
     disableFooterActionsFirst: true,
     loading: false,
@@ -30,7 +31,8 @@ const props = withDefaults(defineProps<{
             id: 'module',
             items: []
         }
-    ]
+    ],
+    horizontalLayout: false,
 })
 const emits = defineEmits<{
     (e: 'selected', args: CustomEvent<any>, entry: AcceptableValue | AcceptableValue[] | undefined): void
@@ -87,6 +89,13 @@ const forwardedSlots = computed(() =>
 function closeActions() {
     actionsOpen.value = false
 }
+
+// these are the properties if one wants a sort of horizontal-oriented layout
+// root: 'h-full u-command-palette grid grid-cols-2 grid-rows-1',
+// content: 'h-full',
+// empty: 'p-0 h-full',
+// footer: 'bg-gradient-to-r from-primary-100 dark:from-primary-950 via-default to-default rounded-b-lg col-span-2 h-fit',
+// input: 'justify-start items-start'
 </script>
 
 <template>
@@ -94,13 +103,11 @@ function closeActions() {
         <UCommandPalette
             :loading="props.loading"
             :ui="{
-                root: 'h-screen! u-command-palette',
-                content: 'h-full',
+                root: `h-screen! u-command-palette ${props?.horizontalLayout ? 'grid grid-cols-2 grid-rows-1 bg-muted rounded-lg' : ''}`,
+                content: 'h-full border-l border-b-transparent bg-default rounded-r-lg',
                 empty: 'p-0 h-full',
-                footer: 'bg-gradient-to-r from-primary-100 dark:from-primary-950 via-default to-default rounded-b-lg',
-                // item: 'data-highlighted:not-data-disabled:before:bg-primary',
-                // itemLabelBase: 'group-data-highlighted:text-inverted',
-                // itemLeadingIcon: 'group-data-highlighted:not-group-data-disabled:text-inverted'
+                footer: `bg-gradient-to-r from-primary-100 dark:from-primary-950 via-default to-default rounded-b-lg ${props?.horizontalLayout ? 'h-fit col-span-2 border-t border-t-default' : ''}`,
+                input: `${props.horizontalLayout ? 'rounded-lg border-none h-fit flex flex-col' : ''}`
             }"
             :icon="props?.icon"
             :groups="props?.groups"

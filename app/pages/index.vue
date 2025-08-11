@@ -42,6 +42,7 @@ const selectedEntry = ref()
             await $win.hideWindow()
         }"
         v-model="selectedEntry"
+        horizontal-layout
     >
         <template #footer="{actionsOpen}">
             <CubitModuleNavigationFooter :actionsOpen/>

@@ -4,32 +4,6 @@ import { getCurrentWindow } from '@tauri-apps/api/window';
 import useAppNotification from "~/composables/app/useAppNotification";
 import useAppWindow from "~/composables/app/useAppWindow";
 
-const $win = useAppWindow()
-
-onMounted(async () => {
-
-    await register('CmdOrControl+Period', async (event) => {
-        const win = getCurrentWindow()
-        console.log('Shortcut triggered');
-        if (event.state === 'Pressed') {
-            if(await win.isVisible()) {
-                await win.hide()
-            } else {
-                await win.show()
-                await win.setFocus()
-
-                //! Disable this for debug purposes
-                // await win.onFocusChanged(({payload: focused}) => {
-                //     if (!focused && unref($win.shouldHideOnBlur())) win.hide();
-                // });
-            }
-        }
-    });
-
-    await useAppNotification().initialize()
-
-    await useAppNotification().notifyMessage("Cubit", "Cubit is opened and running in the background.")
-})
 </script>
 
 <template>
