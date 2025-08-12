@@ -35,13 +35,6 @@
     ],
     "security": {
       "csp": null
-    },
-    "trayIcon": {
-      "iconPath": "icons/32x32.png",
-      "showMenuOnLeftClick": true,
-      "menuOnLeftClick": true,
-      "id": "cubit-tray-icon",
-      "title": "Cubit"
     }
   },
   "bundle": {

@@ -23,6 +23,13 @@ export default defineNuxtConfig({
             // Tauri requires a consistent port
             strictPort: true,
         },
+        optimizeDeps: {
+            include: [
+                '@tauri-apps/plugin-store',
+                '@internationalized/date',
+                'reka-ui/date',
+            ]
+        }
     },
 
     app: {

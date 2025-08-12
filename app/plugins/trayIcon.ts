@@ -1,5 +1,5 @@
 import {getCurrentWindow} from "@tauri-apps/api/window";
-import {defaultWindowIcon} from "@tauri-apps/api/app";
+import {exit} from "@tauri-apps/plugin-process"
 import {Menu} from "@tauri-apps/api/menu/menu";
 import {TrayIcon} from "@tauri-apps/api/tray";
 
@@ -7,15 +7,15 @@ export default defineNuxtPlugin({
     name: 'tray-icon-register',
     enforce: 'post',
     async setup(nuxtApp) {
-        const win = getCurrentWindow()
 
         const menu = await Menu.new({
             items: [
                 {
                     id: 'quit',
                     text: 'Quit',
-                    action(id) {
-                        win.close()
+                    async action(id) {
+                        await getCurrentWindow().close()
+                        await exit(0)
                     }
                 },
             ],
